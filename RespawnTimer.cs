@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Core.Translations;
 using Microsoft.Extensions.Logging;
+using CSTimer = CounterStrikeSharp.API.Modules.Timers.Timer;
 
 namespace RespawnTimer;
 public class RespawnTimer : BasePlugin
@@ -14,6 +15,7 @@ public class RespawnTimer : BasePlugin
     public override string ModuleAuthor => "dollan";
 
     public bool DoRespawn = false;
+    public new List<CSTimer> Timers = [];
 
     public override void Load(bool hotReload)
     {
@@ -23,8 +25,14 @@ public class RespawnTimer : BasePlugin
     [GameEventHandler]
     public HookResult RoundStart(EventRoundStart @event, GameEventInfo info)
     {
+        // Kill all timers
+        foreach (var timer in Timers)
+        {
+            timer.Kill();
+        }
         DoRespawn = true;
-        AddTimer(60, DisableRespawn);
+        var new_timer = AddTimer(60, DisableRespawn);
+        Timers.Add(new_timer);
         return HookResult.Continue;
     }
 
@@ -42,8 +50,11 @@ public class RespawnTimer : BasePlugin
             CCSPlayerController? user = @event.Userid;
             if (user != null)
             {
-                user.Respawn();
-                user.PrintToChat(StringExtensions.ReplaceColorTags("{Lime}[Minigames] {Red}Respawned"));
+                AddTimer(1f, () =>
+                {
+                    user.Respawn();
+                    user.PrintToChat(StringExtensions.ReplaceColorTags("{Lime}Respawned"));
+                });
             }
             return HookResult.Continue;
         }
