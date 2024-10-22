@@ -50,11 +50,12 @@ public class RespawnTimer : BasePlugin
             CCSPlayerController? user = @event.Userid;
             if (user != null)
             {
-                AddTimer(1f, () =>
+                var new_timer = AddTimer(1f, () =>
                 {
                     user.Respawn();
                     user.PrintToChat(StringExtensions.ReplaceColorTags("{Lime}Respawned"));
                 });
+                Timers.Add(new_timer);
             }
             return HookResult.Continue;
         }
