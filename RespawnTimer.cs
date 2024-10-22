@@ -24,7 +24,7 @@ public class RespawnTimer : BasePlugin
     public HookResult RoundStart(EventRoundStart @event, GameEventInfo info)
     {
         DoRespawn = true;
-        AddTimer(60, () => DoRespawn = false);
+        AddTimer(60, DisableRespawn);
         return HookResult.Continue;
     }
 
