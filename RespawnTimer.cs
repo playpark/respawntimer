@@ -4,6 +4,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Core.Translations;
 using Microsoft.Extensions.Logging;
 using CSTimer = CounterStrikeSharp.API.Modules.Timers.Timer;
+using CounterStrikeSharp.API.Modules.Commands;
 
 namespace RespawnTimer;
 public class RespawnTimer : BasePlugin
@@ -20,6 +21,21 @@ public class RespawnTimer : BasePlugin
     public override void Load(bool hotReload)
     {
         Logger.LogInformation("RespawnTimer loaded");
+
+        AddCommandListener("css_respawn", OnRespawnCommand, HookMode.Pre);
+        AddCommandListener("css_r", OnRespawnCommand, HookMode.Pre);
+    }
+
+    [GameEventHandler]
+    private HookResult OnRespawnCommand(CCSPlayerController? player, CommandInfo command)
+    {
+        if (!DoRespawn)
+        {
+            player?.PrintToChat(StringExtensions.ReplaceColorTags("{Lime}[Minigames] {Red}Respawning is currently disabled!"));
+            return HookResult.Stop;
+        }
+
+        return HookResult.Continue;
     }
 
     [GameEventHandler]
