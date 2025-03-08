@@ -47,7 +47,7 @@ public class RespawnTimer : BasePlugin
             timer.Kill();
         }
         DoRespawn = true;
-        var new_timer = AddTimer(30, DisableRespawn);
+        var new_timer = AddTimer(45, DisableRespawn);
         Timers.Add(new_timer);
         return HookResult.Continue;
     }
