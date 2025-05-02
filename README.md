@@ -1,0 +1,1 @@
+Put the MapSettings folder inside the plugin directory: counterstrikesharp/plugins/respawntimer/MapSettings
